@@ -10,8 +10,12 @@ import com.linkedin.backend.features.authentication.utils.Encoder;
 import com.linkedin.backend.features.authentication.utils.JsonWebToken;
 
 import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -20,6 +24,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class AuthenticationService {
@@ -29,6 +34,9 @@ public class AuthenticationService {
     private final Encoder encoder;
     private final JsonWebToken jsonWebToken;
     private final EmailService emailService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
     
 
     public AuthenticationService(AuthenticationUserRepository authenticationUserRepository,Encoder encoder, JsonWebToken jsonWebToken, EmailService emailService) {
@@ -163,5 +171,67 @@ public class AuthenticationService {
         }
         String token = jsonWebToken.generateToken(loginRequestBody.getEmail());
         return new AuthenticationResponseBody(token, "Authentication succeeded.");
+    }
+
+     public AuthenticationUser updateUserProfile(AuthenticationUser user, String firstName, String lastName, String company,
+            String position, String location, String about) {
+        if (firstName != null)
+            user.setFirstName(firstName);
+        if (lastName != null)
+            user.setLastName(lastName);
+        if (company != null)
+            user.setCompany(company);
+        if (position != null)
+            user.setPosition(position);
+        if (location != null)
+            user.setLocation(location);
+        // if (about != null)
+        //     user.setAbout(about);
+
+        return authenticationUserRepository.save(user);
+    }
+
+    // public AuthenticationUser updateProfilePicture(AuthenticationUser user, MultipartFile profilePicture) throws IOException {
+    //     if (profilePicture != null) {
+    //         String profilePictureUrl = storageService.saveImage(profilePicture);
+    //         user.setProfilePicture(profilePictureUrl);
+    //     } else {
+    //         if (user.getProfilePicture() != null)
+    //             storageService.deleteFile(user.getProfilePicture());
+
+    //         user.setProfilePicture(null);
+    //     }
+    //     return authenticationUserRepository.save(user);
+    // }
+
+    // public AuthenticationUser updateCoverPicture(AuthenticationUser user, MultipartFile coverPicture) throws IOException {
+    //     if (coverPicture != null) {
+    //         String coverPictureUrl = storageService.saveImage(coverPicture);
+    //         user.setCoverPicture(coverPictureUrl);
+    //     } else {
+    //         if (user.getCoverPicture() != null)
+    //             storageService.deleteFile(user.getCoverPicture());
+
+    //         user.setCoverPicture(null);
+    //     }
+
+    //     return authenticationUserRepository.save(user);
+    // }
+
+    public AuthenticationUser getUserById(Long receiverId) {
+        return authenticationUserRepository.findById(receiverId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        AuthenticationUser user = entityManager.find(AuthenticationUser.class, userId);
+        if (user != null) {
+            entityManager.createNativeQuery("DELETE FROM posts_likes WHERE user_id = :userId")
+                    .setParameter("userId", userId)
+                    .executeUpdate();
+            entityManager.remove(user);
+        }
+        authenticationUserRepository.deleteById(userId);
     }
 }
