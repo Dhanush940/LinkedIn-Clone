@@ -59,6 +59,9 @@ public class FeedService {
     public Post likePost(Long postId, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
         AuthenticationUser user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        System.out.println("Post:"+post);
+        System.out.println("Post Likes:"+post.getLikes());
+
         if (post.getLikes().contains(user)) {
             post.getLikes().remove(user);
         } else {

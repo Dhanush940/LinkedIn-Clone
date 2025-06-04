@@ -1,9 +1,7 @@
 import { Box } from "../../components/Box/Box";
-import { Button } from "../../components/Button/Button";
-import { Input } from "../../components/Input/Input";
-import { Layout } from "../../components/Layout/Layout";
+import { Button } from "../../../../components/Button/Button";
+import { Input } from "../../../../components/Input/Input";
 import classes from "./ResetPassword.module.scss";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -67,7 +65,7 @@ export function ResetPassword() {
     }
   };
   return (
-    <Layout className={classes.root}>
+    <div className={classes.root}>
       <Box>
         <h1>Reset Password</h1>
 
@@ -147,6 +145,6 @@ export function ResetPassword() {
           </form>
         )}
       </Box>
-    </Layout>
+    </div>
   );
 }

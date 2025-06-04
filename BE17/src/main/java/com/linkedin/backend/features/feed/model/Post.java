@@ -127,4 +127,12 @@ public class Post {
     public void setUpdatedDate(LocalDateTime updatedDate) {
         this.updatedDate = updatedDate;
     }
+
+    @Override
+    public String toString() {
+        return "Post [id=" + id + ", content=" + content + ", picture=" + picture + ", author=" + author + ", likes="
+                + likes + ", comments=" + comments + ", creationDate=" + creationDate + ", updatedDate=" + updatedDate
+                + ", toString()=" + super.toString() + "]";
+    }
+    
 }
