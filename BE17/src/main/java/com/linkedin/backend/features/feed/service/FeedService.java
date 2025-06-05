@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class FeedService {
@@ -59,9 +60,6 @@ public class FeedService {
     public Post likePost(Long postId, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
         AuthenticationUser user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        System.out.println("Post:"+post);
-        System.out.println("Post Likes:"+post.getLikes());
-
         if (post.getLikes().contains(user)) {
             post.getLikes().remove(user);
         } else {
@@ -109,4 +107,13 @@ public class FeedService {
     }
 
 
+    public List<Comment> getPostComments(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        return post.getComments();
+    }
+
+    public Set<AuthenticationUser> getPostLikes(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        return post.getLikes();
+    }
 }

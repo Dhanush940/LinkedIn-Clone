@@ -43,7 +43,6 @@ public class AuthenticationFilter extends HttpFilter {
         }
 
         String path = request.getRequestURI();
-        System.out.println("Path:"+path);
 
         if (unsecuredEndpoints.contains(path) || path.startsWith("/api/v1/authentication/oauth") || path.startsWith("/api/v1/storage")) {
             chain.doFilter(request, response);
@@ -63,7 +62,7 @@ public class AuthenticationFilter extends HttpFilter {
             }
 
             String email = jsonWebTokenService.getEmailFromToken(token);
-            AuthenticationUser user = authenticationService.getUserByEmail(email);
+            AuthenticationUser user = authenticationService.getUser(email);
             request.setAttribute("authenticatedUser", user);
             chain.doFilter(request, response);
         } catch (Exception e) {

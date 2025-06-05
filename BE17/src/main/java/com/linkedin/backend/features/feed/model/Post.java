@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.linkedin.backend.features.authentication.model.AuthenticationUser;
 
 import jakarta.persistence.CascadeType;
@@ -36,6 +37,7 @@ public class Post {
     private AuthenticationUser author;
 
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
             name = "posts_likes",
             joinColumns = @JoinColumn(name = "post_id"),
@@ -44,6 +46,7 @@ public class Post {
     private Set<AuthenticationUser> likes;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Comment> comments;
     
     @CreationTimestamp

@@ -1,25 +1,17 @@
 package com.linkedin.backend.features.feed.controller;
 
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.linkedin.backend.dto.Response;
 import com.linkedin.backend.features.authentication.model.AuthenticationUser;
 import com.linkedin.backend.features.feed.dto.CommentDto;
 import com.linkedin.backend.features.feed.dto.PostDto;
 import com.linkedin.backend.features.feed.model.Comment;
 import com.linkedin.backend.features.feed.model.Post;
 import com.linkedin.backend.features.feed.service.FeedService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/feed")
@@ -61,9 +53,9 @@ public class FeedController {
     }
 
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId, @RequestAttribute("authenticatedUser") AuthenticationUser user) {
+    public ResponseEntity<Response> deletePost(@PathVariable Long postId, @RequestAttribute("authenticatedUser") AuthenticationUser user) {
         feedService.deletePost(postId, user.getId());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new Response("Post deleted successfully."));
     }
 
     @PostMapping("/posts/{postId}/comments")
@@ -72,10 +64,16 @@ public class FeedController {
         return ResponseEntity.ok(comment);
     }
 
+    @GetMapping("/posts/{postId}/comments")
+    public ResponseEntity<List<Comment>> getComments(@PathVariable Long postId) {
+        List<Comment> comments = feedService.getPostComments(postId);
+        return ResponseEntity.ok(comments);
+    }
+
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId, @RequestAttribute("authenticatedUser") AuthenticationUser user) {
+    public ResponseEntity<Response> deleteComment(@PathVariable Long commentId, @RequestAttribute("authenticatedUser") AuthenticationUser user) {
         feedService.deleteComment(commentId, user.getId());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new Response("Comment deleted successfully."));
     }
 
     @PutMapping("/comments/{commentId}")
@@ -89,6 +87,12 @@ public class FeedController {
     public ResponseEntity<Post> likePost(@PathVariable Long postId, @RequestAttribute("authenticatedUser") AuthenticationUser user) {
         Post post = feedService.likePost(postId, user.getId());
         return ResponseEntity.ok(post);
+    }
+
+    @GetMapping("/posts/{postId}/likes")
+    public ResponseEntity<Set<AuthenticationUser>> getPostLikes(@PathVariable Long postId) {
+        Set<AuthenticationUser> likes = feedService.getPostLikes(postId);
+        return ResponseEntity.ok(likes);
     }
 
     @GetMapping("/posts/user/{userId}")

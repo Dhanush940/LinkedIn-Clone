@@ -1,72 +1,53 @@
-import { Box } from "../../components/Box/Box";
 import { Button } from "../../../../components/Button/Button";
 import { Input } from "../../../../components/Input/Input";
+import { usePageTitle } from "../../../../hooks/usePageTitle";
+import { Box } from "../../components/Box/Box";
 import classes from "./VerifyEmail.module.scss";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { request } from "../../../../utils/api";
+import { useAuthentication } from "../../contexts/AuthenticatioContextProvider";
 
 export function VerifyEmail() {
   const [errorMessage, setErrorMessage] = useState("");
+  const { user, setUser } = useAuthentication();
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  usePageTitle("Verify Email");
   const navigate = useNavigate();
 
   const validateEmail = async (code: string) => {
     setMessage("");
-    try {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_URL
-        }/api/v1/authentication/validate-email-verification-token?token=${code}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (response.ok) {
+    await request<void>({
+      endpoint: `/api/v1/authentication/validate-email-verification-token?token=${code}`,
+      method: "PUT",
+      onSuccess: () => {
         setErrorMessage("");
+        setUser({ ...user!, emailVerified: true });
         navigate("/");
-      }
-      const { message } = await response.json();
-      setErrorMessage(message);
-    } catch (e) {
-      console.log(e);
-      setErrorMessage("Something went wrong, please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+      },
+      onFailure: (error) => {
+        setErrorMessage(error);
+      },
+    });
+    setIsLoading(false);
   };
 
   const sendEmailVerificationToken = async () => {
     setErrorMessage("");
-    try {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_URL
-        }/api/v1/authentication/send-email-verification-token`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (response.ok) {
+
+    await request<void>({
+      endpoint: `/api/v1/authentication/send-email-verification-token`,
+      onSuccess: () => {
         setErrorMessage("");
         setMessage("Code sent successfully. Please check your email.");
-        return;
-      }
-      const { message } = await response.json();
-      setErrorMessage(message);
-    } catch (e) {
-      console.log(e);
-      setErrorMessage("Something went wrong, please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+      },
+      onFailure: (error) => {
+        setErrorMessage(error);
+      },
+    });
+    setIsLoading(false);
   };
 
   return (
