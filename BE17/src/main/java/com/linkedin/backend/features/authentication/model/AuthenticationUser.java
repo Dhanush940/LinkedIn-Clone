@@ -2,36 +2,26 @@ package com.linkedin.backend.features.authentication.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.linkedin.backend.features.feed.model.Post;
-
-// import com.linkedin.backend.features.feed.model.Post;
-// import com.linkedin.backend.features.messaging.model.Conversation;
-// import com.linkedin.backend.features.networking.model.Connection;
-// import com.linkedin.backend.features.notifications.model.Notification;
+import com.linkedin.backend.features.notifications.model.Notification;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-// import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
-// import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 
 @Entity(name = "users")
 public class AuthenticationUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @NotNull
     @Email
     @Column(unique = true)
     private String email;
-
     private Boolean emailVerified = false;
     private String emailVerificationToken = null;
     private LocalDateTime emailVerificationTokenExpiryDate = null;
-
     @JsonIgnore
     private String password;
     private String passwordResetToken = null;
@@ -42,36 +32,21 @@ public class AuthenticationUser {
     private String company = null;
     private String position = null;
     private String location = null;
-    private Boolean profileComplete = false;
     private String profilePicture = null;
+    private Boolean profileComplete = false;
 
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "author" , cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> receivedNotifications;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "actor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> actedNotifications;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
-
-    public List<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
-    }
-
-    public Boolean getProfileComplete() {
-        return profileComplete;
-    }
-
-    public void setProfileComplete(Boolean profileComplete) {
-        this.profileComplete = profileComplete;
-    }
 
     public AuthenticationUser(String email, String password) {
         this.email = email;
@@ -81,24 +56,16 @@ public class AuthenticationUser {
     public AuthenticationUser() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public Boolean getEmailVerified() {
         return emailVerified;
     }
 
     public void setEmailVerified(Boolean emailVerified) {
         this.emailVerified = emailVerified;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getEmailVerificationToken() {
@@ -117,14 +84,6 @@ public class AuthenticationUser {
         this.emailVerificationTokenExpiryDate = emailVerificationTokenExpiryDate;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getPasswordResetToken() {
         return passwordResetToken;
     }
@@ -139,6 +98,14 @@ public class AuthenticationUser {
 
     public void setPasswordResetTokenExpiryDate(LocalDateTime passwordResetTokenExpiryDate) {
         this.passwordResetTokenExpiryDate = passwordResetTokenExpiryDate;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {
@@ -159,12 +126,13 @@ public class AuthenticationUser {
         updateProfileCompletionStatus();
     }
 
-    public String getCompany() {
-        return company;
+
+    public String getLocation() {
+        return location;
     }
 
-    public void setCompany(String company) {
-        this.company = company;
+    public void setLocation(String location) {
+        this.location = location;
         updateProfileCompletionStatus();
     }
 
@@ -177,20 +145,55 @@ public class AuthenticationUser {
         updateProfileCompletionStatus();
     }
 
-    public String getLocation() {
-        return location;
+    public String getCompany() {
+        return company;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-        // updateProfileCompletionStatus();
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public void updateProfileCompletionStatus() {
-        this.profileComplete = (this.firstName != null && this.lastName != null && this.company != null
-                && this.position != null && this.location != null);
+        this.profileComplete = (this.firstName != null && this.lastName != null && this.company != null && this.position != null && this.location != null);
     }
 
-   
-    
+    public Boolean getProfileComplete() {
+        return profileComplete;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public List<Notification> getReceivedNotifications() {
+        return receivedNotifications;
+    }
+
+    public void setReceivedNotifications(List<Notification> receivedNotifications) {
+        this.receivedNotifications = receivedNotifications;
+    }
+
+    public List<Notification> getActedNotifications() {
+        return actedNotifications;
+    }
+
+    public void setActedNotifications(List<Notification> actedNotifications) {
+        this.actedNotifications = actedNotifications;
+    }
 }

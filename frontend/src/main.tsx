@@ -15,6 +15,8 @@ import { AuthenticationContextProvider } from "./features/authentication/context
 import { ApplicationLayout } from "./components/ApplicationLayout/ApplicationLayout.tsx";
 import { Profile } from "./features/authentication/pages/Profile/Profile.tsx";
 import { AuthenticationLayout } from "./features/authentication/components/AuthenticationLayout/AuthenticationLayout.tsx";
+import { Notifications } from "./features/feed/pages/Notifications/Notifications.tsx";
+import { PostPage } from "./features/feed/pages/Post/Post.tsx";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +29,10 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <Feed />,
+          },
+          {
+            path: "posts/:id",
+            element: <PostPage />,
           },
           {
             path: "network",
@@ -42,7 +48,7 @@ const router = createBrowserRouter([
           },
           {
             path: "notifications",
-            element: <div>Notifications</div>,
+            element: <Notifications />,
           },
           {
             path: "profile/:id",
@@ -87,6 +93,7 @@ const router = createBrowserRouter([
     ],
   },
 ]);
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RouterProvider router={router} />
