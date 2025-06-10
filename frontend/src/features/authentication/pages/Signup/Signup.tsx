@@ -1,12 +1,11 @@
-import type { FormEvent } from "react";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../../../../components/Button/Button.tsx";
 import { Input } from "../../../../components/Input/Input.tsx";
 import { usePageTitle } from "../../../../hooks/usePageTitle.tsx";
 import { Box } from "../../components/Box/Box";
 import { Seperator } from "../../components/Seperator/Seperator";
-import { useAuthentication } from "../../contexts/AuthenticatioContextProvider.tsx";
+import { useAuthentication } from "../../contexts/AuthenticationContextProvider.tsx";
 import classes from "./Signup.module.scss";
 
 export function Signup() {
@@ -39,12 +38,7 @@ export function Signup() {
         <h1>Sign up</h1>
         <p>Make the most of your professional life.</p>
         <form onSubmit={doSignup}>
-          <Input
-            type="email"
-            id="email"
-            label="Email"
-            onFocus={() => setErrorMessage("")}
-          />
+          <Input type="email" id="email" label="Email" onFocus={() => setErrorMessage("")} />
 
           <Input
             label="Password"
@@ -55,7 +49,7 @@ export function Signup() {
           {errorMessage && <p className={classes.error}>{errorMessage}</p>}
           <p className={classes.disclaimer}>
             By clicking Agree & Join or Continue, you agree to LinkedIn's{" "}
-            <a href="">User Agreement</a>, <a href="">Privacy Policy</a>, and{" "}
+            <a href="">IUser Agreement</a>, <a href="">Privacy Policy</a>, and{" "}
             <a href="">Cookie Policy</a>.
           </p>
           <Button disabled={isLoading} type="submit">

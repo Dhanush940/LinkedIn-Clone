@@ -30,11 +30,7 @@ export function ResetPassword() {
   };
   const navigate = useNavigate();
 
-  const resetPassword = async (
-    email: string,
-    code: string,
-    password: string
-  ) => {
+  const resetPassword = async (email: string, code: string, password: string) => {
     await request<void>({
       endpoint: `/api/v1/authentication/reset-password?email=${email}&token=${code}&newPassword=${password}`,
       method: "PUT",
@@ -65,8 +61,8 @@ export function ResetPassword() {
             }}
           >
             <p>
-              Enter your email and we’ll send a verification code if it matches
-              an existing LinkedIn account.
+              Enter your email and we’ll send a verification code if it matches an existing LinkedIn
+              account.
             </p>
             <Input key="email" name="email" type="email" label="Email" />
             <p style={{ color: "red" }}>{errorMessage}</p>
@@ -94,16 +90,8 @@ export function ResetPassword() {
               setIsLoading(false);
             }}
           >
-            <p>
-              Enter the verification code we sent to your email and your new
-              password.
-            </p>
-            <Input
-              type="text"
-              label="Verification code"
-              key="code"
-              name="code"
-            />
+            <p>Enter the verification code we sent to your email and your new password.</p>
+            <Input type="text" label="Verification code" key="code" name="code" />
             <Input
               label="New password"
               name="password"

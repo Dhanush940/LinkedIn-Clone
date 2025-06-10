@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { WebSocketContextProvider } from "../../features/ws/Ws";
+import { WebSocketContextProvider } from "../../features/ws/WebSocketContextProvider";
 import { Header } from "../Header/Header";
 import classes from "./ApplicationLayout.module.scss";
 export function ApplicationLayout() {

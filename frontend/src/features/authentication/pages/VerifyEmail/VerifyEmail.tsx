@@ -7,7 +7,7 @@ import classes from "./VerifyEmail.module.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { request } from "../../../../utils/api";
-import { useAuthentication } from "../../contexts/AuthenticatioContextProvider";
+import { useAuthentication } from "../../contexts/AuthenticationContextProvider";
 
 export function VerifyEmail() {
   const [errorMessage, setErrorMessage] = useState("");
@@ -64,10 +64,7 @@ export function VerifyEmail() {
             setIsLoading(false);
           }}
         >
-          <p>
-            Only one step left to complete your registration. Verify your email
-            address.
-          </p>
+          <p>Only one step left to complete your registration. Verify your email address.</p>
           <Input type="text" label="Verification code" key="code" name="code" />
           {message ? <p style={{ color: "green" }}>{message}</p> : null}
           {errorMessage ? <p style={{ color: "red" }}>{errorMessage}</p> : null}

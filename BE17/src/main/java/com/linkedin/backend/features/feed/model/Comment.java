@@ -13,16 +13,13 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
     @JsonIgnore
     private Post post;
-
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private AuthenticationUser author;
-    
     @Column(nullable = false)
     private String content;
 

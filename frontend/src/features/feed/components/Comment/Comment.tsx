@@ -2,27 +2,28 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "../../../../components/Input/Input";
 import {
+  IUser,
   useAuthentication,
-  type User,
-} from "../../../authentication/contexts/AuthenticatioContextProvider";
+} from "../../../authentication/contexts/AuthenticationContextProvider";
+
 import { TimeAgo } from "../TimeAgo/TimeAgo";
 import classes from "./Comment.module.scss";
 
-export interface Comment {
+export interface IComment {
   id: number;
   content: string;
-  author: User;
+  author: IUser;
   creationDate: string;
   updatedDate?: string;
 }
 
-interface CommentProps {
-  comment: Comment;
+interface ICommentProps {
+  comment: IComment;
   deleteComment: (commentId: number) => Promise<void>;
   editComment: (commentId: number, content: string) => Promise<void>;
 }
 
-export function Comment({ comment, deleteComment, editComment }: CommentProps) {
+export function Comment({ comment, deleteComment, editComment }: ICommentProps) {
   const navigate = useNavigate();
   const [showActions, setShowActions] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -41,7 +42,7 @@ export function Comment({ comment, deleteComment, editComment }: CommentProps) {
             >
               <img
                 className={classes.avatar}
-                src={comment.author.profilePicture || "/avatar.png"}
+                src={comment.author.profilePicture || "/avatar.svg"}
                 alt=""
               />
               <div>
@@ -51,17 +52,12 @@ export function Comment({ comment, deleteComment, editComment }: CommentProps) {
                 <div className={classes.title}>
                   {comment.author.position + " at " + comment.author.company}
                 </div>
-                <TimeAgo
-                  date={comment.creationDate}
-                  edited={!comment.updatedDate}
-                />
+                <TimeAgo date={comment.creationDate} edited={!!comment.updatedDate} />
               </div>
             </button>
             {comment.author.id == user?.id && (
               <button
-                className={`${classes.action} ${
-                  showActions ? classes.active : ""
-                }`}
+                className={`${classes.action} ${showActions ? classes.active : ""}`}
                 onClick={() => setShowActions(!showActions)}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512">
@@ -73,9 +69,7 @@ export function Comment({ comment, deleteComment, editComment }: CommentProps) {
             {showActions && (
               <div className={classes.actions}>
                 <button onClick={() => setEditing(true)}>Edit</button>
-                <button onClick={() => deleteComment(comment.id)}>
-                  Delete
-                </button>
+                <button onClick={() => deleteComment(comment.id)}>Delete</button>
               </div>
             )}
           </div>

@@ -20,10 +20,12 @@ public class AuthenticationFilter extends HttpFilter {
             "/api/v1/authentication/login",
             "/api/v1/authentication/register",
             "/api/v1/authentication/send-password-reset-token",
-            "/api/v1/authentication/reset-password");
+            "/api/v1/authentication/reset-password"
+    );
 
     private final JsonWebToken jsonWebTokenService;
     private final AuthenticationService authenticationService;
+
 
     public AuthenticationFilter(JsonWebToken jsonWebTokenService, AuthenticationService authenticationService) {
         this.jsonWebTokenService = jsonWebTokenService;
@@ -31,11 +33,11 @@ public class AuthenticationFilter extends HttpFilter {
     }
 
     @Override
-    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         response.addHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
@@ -43,8 +45,7 @@ public class AuthenticationFilter extends HttpFilter {
         }
 
         String path = request.getRequestURI();
-
-        if (unsecuredEndpoints.contains(path) || path.startsWith("/api/v1/authentication/oauth") || path.startsWith("/api/v1/storage")) {
+        if (unsecuredEndpoints.contains(path)) {
             chain.doFilter(request, response);
             return;
         }

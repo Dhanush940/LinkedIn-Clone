@@ -5,18 +5,13 @@ import com.linkedin.backend.features.authentication.repository.AuthenticationUse
 import com.linkedin.backend.features.authentication.utils.Encoder;
 import com.linkedin.backend.features.feed.model.Post;
 import com.linkedin.backend.features.feed.repository.PostRepository;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
 
 @Configuration
 public class LoadDatabaseConfiguration {
@@ -36,15 +31,15 @@ public class LoadDatabaseConfiguration {
 
     private List<AuthenticationUser> createUsers(AuthenticationUserRepository authenticationUserRepository) {
         List<AuthenticationUser> users = List.of(
-                createUser("dhanushkunamaneni123@gmail.com", "dhanush", "Dhanush", "Kunamaneni", "Software Engineer", "PrimeSoft", "Hyderabad, India",
+                createUser("john.doe@example.com", "john", "John", "Doe", "Software Engineer", "Docker Inc.", "San Francisco, CA",
                         "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=3560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-                createUser("luffy@gmail.com", "luffy", "Luffy", "Monkey", "Pira", "Toho", "Tokyo, JP",
+                createUser("anne.claire@example.com", "anne", "Anne", "Claire", "HR Manager", "eToro", "Paris, Fr",
                         "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-                createUser("nami@gmail.com", "nami", "Nami", "Amuro", "Pira", "Toho", "Tokyo, JP",
+                createUser("arnauld.manner@example.com", "arnauld", "Arnauld", "Manner", "Product Manager", "Arc", "Dakar, SN",
                         "https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=2725&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-                createUser("sanji@gmail.com", "sanji", "Sanji", "San", "Second Man", "Toho", "Tokyo, JP",
+                createUser("moussa.diop@example.com", "moussa", "Moussa", "Diop", "Software Engineer", "Orange", "Bordeaux, FR",
                         "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?q=80&w=3560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-                createUser("zoro@gmail.com", "zoro", "Zoro", "Zor", "First Man", "Toho", "Tokyo, JP",
+                createUser("awa.diop@example.com", "awa", "Awa", "Diop", "Data Scientist", "Zoho", "New Delhi, IN",
                         "https://images.unsplash.com/photo-1640951613773-54706e06851d?q=80&w=2967&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
         );
 
@@ -61,7 +56,7 @@ public class LoadDatabaseConfiguration {
         user.setPosition(position);
         user.setCompany(company);
         user.setLocation(location);
-        // user.setProfilePicture(profilePicture);
+        user.setProfilePicture(profilePicture);
         return user;
     }
 

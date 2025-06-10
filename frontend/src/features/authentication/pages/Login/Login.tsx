@@ -1,12 +1,11 @@
-import { useState } from "react";
-import type { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../../../../components/Button/Button";
 import { Input } from "../../../../components/Input/Input";
 import { usePageTitle } from "../../../../hooks/usePageTitle";
 import { Box } from "../../components/Box/Box";
 import { Seperator } from "../../components/Seperator/Seperator";
-import { useAuthentication } from "../../contexts/AuthenticatioContextProvider";
+import { useAuthentication } from "../../contexts/AuthenticationContextProvider";
 import classes from "./Login.module.scss";
 
 export function Login() {
@@ -42,12 +41,7 @@ export function Login() {
         <h1>Sign in</h1>
         <p>Stay updated on your professional world.</p>
         <form onSubmit={doLogin}>
-          <Input
-            label="Email"
-            type="email"
-            id="email"
-            onFocus={() => setErrorMessage("")}
-          />
+          <Input label="Email" type="email" id="email" onFocus={() => setErrorMessage("")} />
           <Input
             label="Password"
             type="password"
@@ -59,9 +53,7 @@ export function Login() {
           <Button type="submit" disabled={isLoading}>
             {isLoading ? "..." : "Sign in"}
           </Button>
-          <Link to="/authentication/request-password-reset">
-            Forgot password?
-          </Link>
+          <Link to="/authentication/request-password-reset">Forgot password?</Link>
         </form>
         <Seperator>Or</Seperator>
         <div className={classes.register}>

@@ -1,7 +1,8 @@
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePageTitle } from "../../../../hooks/usePageTitle";
 import { request } from "../../../../utils/api";
-import { type User } from "../../../authentication/contexts/AuthenticatioContextProvider";
+import { IUser } from "../../../authentication/contexts/AuthenticationContextProvider";
 import { LeftSidebar } from "../../components/LeftSidebar/LeftSidebar";
 import { RightSidebar } from "../../components/RightSidebar/RightSidebar";
 import { TimeAgo } from "../../components/TimeAgo/TimeAgo";
@@ -11,11 +12,10 @@ enum NotificationType {
   LIKE = "LIKE",
   COMMENT = "COMMENT",
 }
-
-export interface Notification {
+export interface INotification {
   id: number;
-  recipient: User;
-  actor: User;
+  recipient: IUser;
+  actor: IUser;
   read: boolean;
   type: NotificationType;
   resourceId: number;
@@ -23,11 +23,12 @@ export interface Notification {
 }
 
 export function Notifications() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  usePageTitle("Notifications");
+  const [notifications, setNotifications] = useState<INotification[]>([]);
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      await request<Notification[]>({
+      await request<INotification[]>({
         endpoint: "/api/v1/notifications",
         onSuccess: setNotifications,
         onFailure: (error) => console.log(error),
@@ -71,9 +72,8 @@ function Notification({
   notification,
   setNotifications,
 }: {
-  notification: Notification;
-
-  setNotifications: Dispatch<SetStateAction<Notification[]>>;
+  notification: INotification;
+  setNotifications: Dispatch<SetStateAction<INotification[]>>;
 }) {
   const navigate = useNavigate();
 
@@ -84,9 +84,7 @@ function Notification({
       onSuccess: () => {
         setNotifications((prev) =>
           prev.map((notification) =>
-            notification.id === notificationId
-              ? { ...notification, isRead: true }
-              : notification
+            notification.id === notificationId ? { ...notification, isRead: true } : notification
           )
         );
       },
@@ -100,27 +98,18 @@ function Notification({
         navigate(`/posts/${notification.resourceId}`);
       }}
       className={
-        notification.read
-          ? classes.notification
-          : `${classes.notification} ${classes.unread}`
+        notification.read ? classes.notification : `${classes.notification} ${classes.unread}`
       }
     >
-      <img
-        src={notification.actor.profilePicture}
-        alt=""
-        className={classes.avatar}
-      />
+      <img src={notification.actor.profilePicture} alt="" className={classes.avatar} />
 
       <p
         style={{
           marginRight: "auto",
         }}
       >
-        <strong>
-          {notification.actor.firstName + " " + notification.actor.lastName}
-        </strong>{" "}
-        {notification.type === NotificationType.LIKE ? "liked" : "commented on"}{" "}
-        your post.
+        <strong>{notification.actor.firstName + " " + notification.actor.lastName}</strong>{" "}
+        {notification.type === NotificationType.LIKE ? "liked" : "commented on"} your post.
       </p>
       <TimeAgo date={notification.creationDate} />
     </button>

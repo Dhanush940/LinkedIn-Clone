@@ -1,4 +1,5 @@
 package com.linkedin.backend.features.feed.dto;
+
 public class CommentDto {
     private String content;
 

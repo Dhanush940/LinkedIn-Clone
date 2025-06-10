@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.linkedin.backend.features.authentication.model.AuthenticationUser;
 
 import jakarta.persistence.CascadeType;
@@ -31,24 +31,20 @@ public class Post {
     @NotEmpty
     private String content;
     private String picture;
-    
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private AuthenticationUser author;
-
-    @ManyToMany
     @JsonIgnore
+    @ManyToMany
     @JoinTable(
             name = "posts_likes",
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<AuthenticationUser> likes;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
-    
     @CreationTimestamp
     private LocalDateTime creationDate;
 
@@ -130,12 +126,4 @@ public class Post {
     public void setUpdatedDate(LocalDateTime updatedDate) {
         this.updatedDate = updatedDate;
     }
-
-    @Override
-    public String toString() {
-        return "Post [id=" + id + ", content=" + content + ", picture=" + picture + ", author=" + author + ", likes="
-                + likes + ", comments=" + comments + ", creationDate=" + creationDate + ", updatedDate=" + updatedDate
-                + ", toString()=" + super.toString() + "]";
-    }
-    
 }
