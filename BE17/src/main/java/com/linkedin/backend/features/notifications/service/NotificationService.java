@@ -91,8 +91,12 @@ public class NotificationService {
         messagingTemplate.convertAndSend("/topic/conversations/" + conversationId + "/messages", message);
     }
 
-    public void sendPostCreated(Post post) {
-        messagingTemplate.convertAndSend("/topic/post/create", post);
+    public void sendPostCreateEdit(Post post) {
+        messagingTemplate.convertAndSend("/topic/post/create-edit", post);
+    }
+
+    public void sendPostDelete(Post post) {
+        messagingTemplate.convertAndSend("/topic/post/delete", post);
     }
 
 }

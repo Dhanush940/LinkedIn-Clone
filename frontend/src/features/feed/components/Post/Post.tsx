@@ -63,9 +63,9 @@ export function Post({ post, setPosts }: PostProps) {
     const subscription = webSocketClient?.subscribe(
       `/topic/likes/${post.id}`,
       (message) => {
-        console.log("Message:", message);
+        // console.log("Message:", message);
         const likes = JSON.parse(message.body);
-        console.log("Likes : ", likes);
+        // console.log("Likes : ", likes);
         setLikes(likes);
         setPostLiked(likes.some((like: IUser) => like.id === user?.id));
       }
@@ -219,6 +219,18 @@ export function Post({ post, setPosts }: PostProps) {
       },
     });
   };
+
+  useEffect(() => {
+    if (!webSocketClient) return;
+    const subscription = webSocketClient.subscribe(
+      "/topic/post/delete",
+      (message: any) => {
+        const deletedPost = JSON.parse(message.body);
+        setPosts((prev) => prev.filter((p) => p.id !== deletedPost.id));
+      }
+    );
+    return () => subscription?.unsubscribe();
+  }, [webSocketClient, setPosts]);
 
   return (
     <>

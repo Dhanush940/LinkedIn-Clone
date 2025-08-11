@@ -34,6 +34,7 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private AuthenticationUser author;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -45,6 +46,7 @@ public class Post {
     @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+    
     @CreationTimestamp
     private LocalDateTime creationDate;
 

@@ -59,6 +59,7 @@ export function Header() {
       `/topic/users/${user?.id}/conversations`,
       (message) => {
         const conversation = JSON.parse(message.body);
+        // console.log("Header conversation:", conversation);
         setConversations((prevConversations) => {
           const index = prevConversations.findIndex(
             (c) => c.id === conversation.id
@@ -81,7 +82,7 @@ export function Header() {
       `/topic/users/${user?.id}/notifications`,
       (message) => {
         const notification = JSON.parse(message.body);
-        console.log("Notification:", notification);
+        // console.log("Notification:", notification);
         setNotifications((prev) => {
           const index = prev.findIndex((n) => n.id === notification.id);
           if (index === -1) {

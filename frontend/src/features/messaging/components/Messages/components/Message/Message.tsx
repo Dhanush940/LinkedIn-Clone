@@ -12,6 +12,7 @@ interface IMessageProps {
 
 export function Message({ message, user }: IMessageProps) {
   const messageRef = useRef<HTMLDivElement>(null);
+  // console.log("Message:");
   useEffect(() => {
     if (!message.isRead && user?.id === message.receiver.id) {
       request<void>({

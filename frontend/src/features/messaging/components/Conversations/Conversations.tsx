@@ -38,12 +38,17 @@ export function Conversations(props: IConversationsProps) {
       `/topic/users/${user?.id}/conversations`,
       (message) => {
         const conversation = JSON.parse(message.body);
+        // console.log("New conversation:", conversation);
         setConversations((prevConversations) => {
-          const index = prevConversations.findIndex((c) => c.id === conversation.id);
+          const index = prevConversations.findIndex(
+            (c) => c.id === conversation.id
+          );
           if (index === -1) {
             return [conversation, ...prevConversations];
           }
-          return prevConversations.map((c) => (c.id === conversation.id ? conversation : c));
+          return prevConversations.map((c) =>
+            c.id === conversation.id ? conversation : c
+          );
         });
       }
     );
@@ -53,7 +58,9 @@ export function Conversations(props: IConversationsProps) {
   return (
     <div className={classes.root} {...props}>
       {conversations.map((conversation) => {
-        return <Conversation key={conversation.id} conversation={conversation} />;
+        return (
+          <Conversation key={conversation.id} conversation={conversation} />
+        );
       })}
       {conversations.length === 0 && (
         <div

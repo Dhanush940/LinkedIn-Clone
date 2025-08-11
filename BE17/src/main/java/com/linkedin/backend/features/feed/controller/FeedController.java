@@ -7,7 +7,6 @@ import com.linkedin.backend.features.feed.dto.PostDto;
 import com.linkedin.backend.features.feed.model.Comment;
 import com.linkedin.backend.features.feed.model.Post;
 import com.linkedin.backend.features.feed.service.FeedService;
-import com.linkedin.backend.features.notifications.service.NotificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +17,9 @@ import java.util.Set;
 @RequestMapping("/api/v1/feed")
 public class FeedController {
     private final FeedService feedService;
-    private final NotificationService notificationService;
 
-    public FeedController(FeedService feedService, NotificationService notificationService) {
+    public FeedController(FeedService feedService) {
         this.feedService = feedService;
-        this.notificationService = notificationService;
     }
 
     @GetMapping
@@ -40,7 +37,6 @@ public class FeedController {
     @PostMapping("/posts")
     public ResponseEntity<Post> createPost(@RequestBody PostDto postDto, @RequestAttribute("authenticatedUser") AuthenticationUser user) {
         Post post = feedService.createPost(postDto, user.getId());
-        notificationService.sendPostCreated(post);
         return ResponseEntity.ok(post);
     }
 

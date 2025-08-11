@@ -8,27 +8,51 @@ import { LeftSidebar } from "../../components/LeftSidebar/LeftSidebar.tsx";
 import { Madal } from "../../components/Modal/Modal.tsx";
 import { IPost, Post } from "../../components/Post/Post.tsx";
 import { RightSidebar } from "../../components/RightSidebar/RightSidebar.tsx";
+import { useWebSocket } from "../../../ws/WebSocketContextProvider.tsx";
 import classes from "./Feed.module.scss";
 
 export function Feed() {
   usePageTitle("Feed");
   const [showPostingModal, setShowPostingModal] = useState(false);
-  const [feedContent, setFeedContent] = useState<"all" | "connexions">("connexions");
+  const [feedContent, setFeedContent] = useState<"all" | "connexions">(
+    "connexions"
+  );
   const { user } = useAuthentication();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<IPost[]>([]);
   const [error, setError] = useState("");
+  const webSocketClient = useWebSocket();
 
   useEffect(() => {
     const fetchPosts = async () => {
       await request<IPost[]>({
-        endpoint: "/api/v1/feed" + (feedContent === "connexions" ? "" : "/posts"),
+        endpoint:
+          "/api/v1/feed" + (feedContent === "connexions" ? "" : "/posts"),
         onSuccess: (data) => setPosts(data),
         onFailure: (error) => setError(error),
       });
     };
     fetchPosts();
   }, [feedContent]);
+
+  useEffect(() => {
+    if (!webSocketClient) return;
+    const subscription = webSocketClient.subscribe(
+      "/topic/post/create-edit",
+      (message: any) => {
+        const newPost = JSON.parse(message.body);
+        // console.log("New Post:", newPost);
+        setPosts((prev) => {
+          // Avoid duplicate posts, update if exists
+          if (prev.some((p) => p.id === newPost.id)) {
+            return prev.map((p) => (p.id === newPost.id ? newPost : p));
+          }
+          return [newPost, ...prev];
+        });
+      }
+    );
+    return () => subscription?.unsubscribe();
+  }, [webSocketClient]);
 
   const handlePost = async (content: string, picture: string) => {
     await request<IPost>({
@@ -86,7 +110,7 @@ export function Feed() {
         </div>
 
         <div className={classes.feed}>
-          {posts.map((post) => (
+          {posts?.map((post) => (
             <Post key={post.id} post={post} setPosts={setPosts} />
           ))}
         </div>

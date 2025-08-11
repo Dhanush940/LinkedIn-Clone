@@ -37,7 +37,7 @@ export function Conversation() {
       `/topic/users/${user?.id}/conversations`,
       (message) => {
         const conversation = JSON.parse(message.body);
-        console.log(conversation);
+
         setConversations((prevConversations) => {
           const index = prevConversations.findIndex(
             (c) => c.id === conversation.id
@@ -76,7 +76,7 @@ export function Conversation() {
       `/topic/conversations/${conversation?.id}/messages`,
       (data) => {
         const message = JSON.parse(data.body);
-        console.log("Message:", message);
+        // console.log("Message:", message);
 
         setConversation((prevConversation) => {
           if (!prevConversation) return null;
@@ -127,7 +127,7 @@ export function Conversation() {
       receiverId: slectedUser?.id,
       content,
     };
-    console.log(message);
+    // console.log(message);
     await request<IConversation>({
       endpoint: "/api/v1/messaging/conversations",
       method: "POST",

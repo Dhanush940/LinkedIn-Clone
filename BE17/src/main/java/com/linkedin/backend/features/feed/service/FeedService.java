@@ -33,7 +33,9 @@ public class FeedService {
         Post post = new Post(postDto.getContent(), author);
         post.setPicture(postDto.getPicture());
         post.setLikes(new HashSet<>());
-        return postRepository.save(post);
+        Post savedPost = postRepository.save(post);
+        notificationService.sendPostCreateEdit(savedPost);
+        return savedPost;
     }
 
     public Post getPost(Long postId) {
@@ -48,6 +50,7 @@ public class FeedService {
         }
         post.setContent(postDto.getContent());
         post.setPicture(postDto.getPicture());
+        notificationService.sendPostCreateEdit(post);
         return postRepository.save(post);
     }
 
@@ -58,6 +61,7 @@ public class FeedService {
             throw new IllegalArgumentException("User is not the author of the post");
         }
         postRepository.delete(post);
+        notificationService.sendPostDelete(post);
     }
 
     public Post likePost(Long postId, Long userId) {
