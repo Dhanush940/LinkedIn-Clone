@@ -84,7 +84,9 @@ function Notification({
       onSuccess: () => {
         setNotifications((prev) =>
           prev.map((notification) =>
-            notification.id === notificationId ? { ...notification, isRead: true } : notification
+            notification.id === notificationId
+              ? { ...notification, isRead: true }
+              : notification
           )
         );
       },
@@ -98,18 +100,27 @@ function Notification({
         navigate(`/posts/${notification.resourceId}`);
       }}
       className={
-        notification.read ? classes.notification : `${classes.notification} ${classes.unread}`
+        notification.read
+          ? classes.notification
+          : `${classes.notification} ${classes.unread}`
       }
     >
-      <img src={notification.actor.profilePicture} alt="" className={classes.avatar} />
+      <img
+        src={notification.actor.profilePicture || "/avatar.svg"}
+        alt=""
+        className={classes.avatar}
+      />
 
       <p
         style={{
           marginRight: "auto",
         }}
       >
-        <strong>{notification.actor.firstName + " " + notification.actor.lastName}</strong>{" "}
-        {notification.type === NotificationType.LIKE ? "liked" : "commented on"} your post.
+        <strong>
+          {notification.actor.firstName + " " + notification.actor.lastName}
+        </strong>{" "}
+        {notification.type === NotificationType.LIKE ? "liked" : "commented on"}{" "}
+        your post.
       </p>
       <TimeAgo date={notification.creationDate} />
     </button>

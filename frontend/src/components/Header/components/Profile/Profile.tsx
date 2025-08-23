@@ -41,7 +41,11 @@ export function Profile({
           }
         }}
       >
-        <img className={classes.avatar} src={user?.profilePicture || "/avatar.svg"} alt="" />
+        <img
+          className={classes.avatar}
+          src={user?.profilePicture || "/avatar.svg"}
+          alt=""
+        />
         <div className={classes.name}>
           <div>{user?.firstName + " " + user?.lastName?.charAt(0) + "."}</div>
         </div>
@@ -56,8 +60,12 @@ export function Profile({
               alt=""
             />
             <div className={classes.right}>
-              <div className={classes.name}>{user?.firstName + " " + user?.lastName}</div>
-              <div className={classes.title}>{user?.position + " at " + user?.company}</div>
+              <div className={classes.name}>
+                {user?.firstName + " " + user?.lastName}
+              </div>
+              <div className={classes.title}>
+                {user?.position + " at " + user?.company}
+              </div>
             </div>
           </div>
           <div className={classes.links}>
@@ -72,10 +80,6 @@ export function Profile({
             >
               View Profile
             </Button>
-
-            <Link to="/settings" onClick={() => setShowProfileMenu(false)}>
-              Settings & Privacy
-            </Link>
             <Link
               to="/logout"
               onClick={(e) => {

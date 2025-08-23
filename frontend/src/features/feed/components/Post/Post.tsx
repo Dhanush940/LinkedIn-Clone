@@ -47,7 +47,6 @@ export function Post({ post, setPosts }: PostProps) {
 
   useEffect(() => {
     const fetchComments = async () => {
-      // console.log("1");
       await request<IComment[]>({
         endpoint: `/api/v1/feed/posts/${post.id}/comments`,
         onSuccess: (data) => setComments(data),
@@ -63,9 +62,7 @@ export function Post({ post, setPosts }: PostProps) {
     const subscription = webSocketClient?.subscribe(
       `/topic/likes/${post.id}`,
       (message) => {
-        // console.log("Message:", message);
         const likes = JSON.parse(message.body);
-        // console.log("Likes : ", likes);
         setLikes(likes);
         setPostLiked(likes.some((like: IUser) => like.id === user?.id));
       }
@@ -74,7 +71,6 @@ export function Post({ post, setPosts }: PostProps) {
   }, [post.id, user?.id, webSocketClient]);
 
   useEffect(() => {
-    // console.log("3");
     const subscription = webSocketClient?.subscribe(
       `/topic/comments/${post.id}`,
       (message) => {
@@ -93,7 +89,6 @@ export function Post({ post, setPosts }: PostProps) {
   }, [post.id, webSocketClient]);
 
   useEffect(() => {
-    // console.log("4");
     const subscription = webSocketClient?.subscribe(
       `/topic/comments/${post.id}/delete`,
       (message) => {
@@ -108,7 +103,27 @@ export function Post({ post, setPosts }: PostProps) {
   }, [post.id, webSocketClient]);
 
   useEffect(() => {
-    // console.log("5");
+    const subscription = webSocketClient?.subscribe(
+      `/topic/posts/${post.id}/delete`,
+      () => {
+        setPosts((prev) => prev.filter((p) => p.id !== post.id));
+      }
+    );
+    return () => subscription?.unsubscribe();
+  }, [post.id, setPosts, webSocketClient]);
+
+  useEffect(() => {
+    const subscription = webSocketClient?.subscribe(
+      `/topic/posts/${post.id}/edit`,
+      (data) => {
+        const post = JSON.parse(data.body);
+        setPosts((prev) => prev.map((p) => (p.id === post.id ? post : p)));
+      }
+    );
+    return () => subscription?.unsubscribe();
+  }, [post.id, setPosts, webSocketClient]);
+
+  useEffect(() => {
     const fetchLikes = async () => {
       await request<IUser[]>({
         endpoint: `/api/v1/feed/posts/${post.id}/likes`,
@@ -219,18 +234,6 @@ export function Post({ post, setPosts }: PostProps) {
       },
     });
   };
-
-  useEffect(() => {
-    if (!webSocketClient) return;
-    const subscription = webSocketClient.subscribe(
-      "/topic/post/delete",
-      (message: any) => {
-        const deletedPost = JSON.parse(message.body);
-        setPosts((prev) => prev.filter((p) => p.id !== deletedPost.id));
-      }
-    );
-    return () => subscription?.unsubscribe();
-  }, [webSocketClient, setPosts]);
 
   return (
     <>

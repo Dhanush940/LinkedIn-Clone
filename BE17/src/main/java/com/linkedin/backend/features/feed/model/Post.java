@@ -7,7 +7,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.linkedin.backend.features.authentication.model.AuthenticationUser;
+import com.linkedin.backend.features.authentication.model.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -33,26 +33,20 @@ public class Post {
     private String picture;
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
-    private AuthenticationUser author;
-
+    private User author;
     @JsonIgnore
     @ManyToMany
-    @JoinTable(
-            name = "posts_likes",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private Set<AuthenticationUser> likes;
+    @JoinTable(name = "posts_likes", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> likes;
     @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
-    
     @CreationTimestamp
     private LocalDateTime creationDate;
 
     private LocalDateTime updatedDate;
 
-    public Post(String content, AuthenticationUser author) {
+    public Post(String content, User author) {
         this.content = content;
         this.author = author;
     }
@@ -81,19 +75,19 @@ public class Post {
         this.content = content;
     }
 
-    public AuthenticationUser getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(AuthenticationUser author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 
-    public Set<AuthenticationUser> getLikes() {
+    public Set<User> getLikes() {
         return likes;
     }
 
-    public void setLikes(Set<AuthenticationUser> likes) {
+    public void setLikes(Set<User> likes) {
         this.likes = likes;
     }
 

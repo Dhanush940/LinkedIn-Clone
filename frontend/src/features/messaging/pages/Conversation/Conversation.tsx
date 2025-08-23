@@ -6,6 +6,7 @@ import {
   IUser,
   useAuthentication,
 } from "../../../authentication/contexts/AuthenticationContextProvider";
+import { IConnection } from "../../../networking/components/Connection/Connection";
 import { useWebSocket } from "../../../ws/WebSocketContextProvider";
 import { IConversation } from "../../components/Conversations/Conversations";
 import { Messages } from "../../components/Messages/Messages";
@@ -37,7 +38,7 @@ export function Conversation() {
       `/topic/users/${user?.id}/conversations`,
       (message) => {
         const conversation = JSON.parse(message.body);
-
+        console.log(conversation);
         setConversations((prevConversations) => {
           const index = prevConversations.findIndex(
             (c) => c.id === conversation.id
@@ -57,9 +58,12 @@ export function Conversation() {
   useEffect(() => {
     if (id == "new") {
       setConversation(null);
-      request<IUser[]>({
-        endpoint: "/api/v1/authentication/users",
-        onSuccess: (data) => setSuggestingUsers(data),
+      request<IConnection[]>({
+        endpoint: "/api/v1/networking/connections",
+        onSuccess: (data) =>
+          setSuggestingUsers(
+            data.map((c) => (c.author.id === user?.id ? c.recipient : c.author))
+          ),
         onFailure: (error) => console.log(error),
       });
     } else {
@@ -76,7 +80,6 @@ export function Conversation() {
       `/topic/conversations/${conversation?.id}/messages`,
       (data) => {
         const message = JSON.parse(data.body);
-        // console.log("Message:", message);
 
         setConversation((prevConversation) => {
           if (!prevConversation) return null;
@@ -127,7 +130,7 @@ export function Conversation() {
       receiverId: slectedUser?.id,
       content,
     };
-    // console.log(message);
+
     await request<IConversation>({
       endpoint: "/api/v1/messaging/conversations",
       method: "POST",
@@ -162,7 +165,7 @@ export function Conversation() {
             <div className={classes.top}>
               <img
                 className={classes.avatar}
-                src={conversationUserToDisplay?.profilePicture}
+                src={conversationUserToDisplay?.profilePicture || "/avatar.svg"}
                 alt=""
               />
               <div>
@@ -187,6 +190,7 @@ export function Conversation() {
               </p>
               {!slectedUser && (
                 <Input
+                  disabled={suggestingUsers.length === 0}
                   type="text"
                   name="recipient"
                   placeholder="Type a name"
@@ -262,6 +266,10 @@ export function Conversation() {
                     ))}
                 </div>
               )}
+
+              {suggestingUsers.length === 0 && (
+                <div>You need to have connections to start a conversation.</div>
+              )}
             </form>
           )}
           {conversation && (
@@ -290,7 +298,11 @@ export function Conversation() {
             <button
               type="submit"
               className={classes.send}
-              disabled={postingMessage || !content.trim()}
+              disabled={
+                postingMessage ||
+                !content.trim() ||
+                (creatingNewConversation && !slectedUser)
+              }
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
