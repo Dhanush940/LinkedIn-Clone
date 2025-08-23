@@ -35,6 +35,7 @@ interface IAuthenticationContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   signup: (email: string, password: string) => Promise<void>;
+  ouathLogin: (code: string, page: "login" | "signup") => Promise<void>;
 }
 
 const AuthenticationContext = createContext<IAuthenticationContextType | null>(
@@ -60,6 +61,20 @@ export function AuthenticationContextProvider() {
       endpoint: "/api/v1/authentication/login",
       method: "POST",
       body: JSON.stringify({ email, password }),
+      onSuccess: ({ token }) => {
+        localStorage.setItem("token", token);
+      },
+      onFailure: (error) => {
+        throw new Error(error);
+      },
+    });
+  };
+
+  const ouathLogin = async (code: string, page: "login" | "signup") => {
+    await request<IAuthenticationResponse>({
+      endpoint: "/api/v1/authentication/oauth/google/login",
+      method: "POST",
+      body: JSON.stringify({ code, page }),
       onSuccess: ({ token }) => {
         localStorage.setItem("token", token);
       },
@@ -112,7 +127,12 @@ export function AuthenticationContextProvider() {
   }
 
   if (!isLoading && !user && !isOnAuthPage) {
-    return <Navigate to="/authentication/login" />;
+    return (
+      <Navigate
+        to="/authentication/login"
+        state={{ from: location.pathname }}
+      />
+    );
   }
 
   if (
@@ -128,6 +148,7 @@ export function AuthenticationContextProvider() {
     user.emailVerified &&
     location.pathname == "/authentication/verify-email"
   ) {
+    console.log("here1");
     return <Navigate to="/" />;
   }
 
@@ -146,11 +167,12 @@ export function AuthenticationContextProvider() {
     user.profileComplete &&
     location.pathname.includes("/authentication/profile")
   ) {
+    console.log("here2");
     return <Navigate to="/" />;
   }
 
   if (user && isOnAuthPage) {
-    return <Navigate to="/" />;
+    return <Navigate to={location.state?.from || "/"} />;
   }
 
   return (
@@ -161,6 +183,7 @@ export function AuthenticationContextProvider() {
         logout,
         signup,
         setUser,
+        ouathLogin,
       }}
     >
       <Outlet />

@@ -4,7 +4,10 @@ import { Button } from "../../../../components/Button/Button";
 import { Input } from "../../../../components/Input/Input";
 import { request } from "../../../../utils/api";
 import { Box } from "../../components/Box/Box";
-import { IUser, useAuthentication } from "../../contexts/AuthenticationContextProvider";
+import {
+  IUser,
+  useAuthentication,
+} from "../../contexts/AuthenticationContextProvider";
 import classes from "./Profile.module.scss";
 export function Profile() {
   const [step, setStep] = useState(0);
@@ -12,11 +15,11 @@ export function Profile() {
   const { user, setUser } = useAuthentication();
   const [error, setError] = useState("");
   const [data, setData] = useState({
-    firstName: "",
-    lastName: "",
-    company: "",
-    position: "",
-    location: "",
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    company: user?.company || "",
+    position: user?.position || "",
+    location: user?.location || "",
   });
   const onSubmit = async () => {
     if (!data.firstName || !data.lastName) {
@@ -46,7 +49,9 @@ export function Profile() {
     <div className={classes.root}>
       <Box>
         <h1>Only one last step</h1>
-        <p>Tell us a bit about yourself so we can personalize your experience.</p>
+        <p>
+          Tell us a bit about yourself so we can personalize your experience.
+        </p>
         {step === 0 && (
           <div className={classes.inputs}>
             <Input
@@ -55,7 +60,10 @@ export function Profile() {
               label="First Name"
               name="firstName"
               placeholder="Jhon"
-              onChange={(e) => setData((prev) => ({ ...prev, firstName: e.target.value }))}
+              onChange={(e) =>
+                setData((prev) => ({ ...prev, firstName: e.target.value }))
+              }
+              value={data.firstName}
             ></Input>
             <Input
               onFocus={() => setError("")}
@@ -63,7 +71,10 @@ export function Profile() {
               label="Last Name"
               name="lastName"
               placeholder="Doe"
-              onChange={(e) => setData((prev) => ({ ...prev, lastName: e.target.value }))}
+              onChange={(e) =>
+                setData((prev) => ({ ...prev, lastName: e.target.value }))
+              }
+              value={data.lastName}
             ></Input>
           </div>
         )}
@@ -74,11 +85,17 @@ export function Profile() {
               label="Latest company"
               name="company"
               placeholder="Docker Inc"
-              onChange={(e) => setData((prev) => ({ ...prev, company: e.target.value }))}
+              onChange={(e) =>
+                setData((prev) => ({ ...prev, company: e.target.value }))
+              }
+              value={data.company}
             ></Input>
             <Input
               onFocus={() => setError("")}
-              onChange={(e) => setData((prev) => ({ ...prev, position: e.target.value }))}
+              onChange={(e) =>
+                setData((prev) => ({ ...prev, position: e.target.value }))
+              }
+              value={data.position}
               label="Latest position"
               name="position"
               placeholder="Software Engineer"
@@ -91,7 +108,10 @@ export function Profile() {
             label="Location"
             name="location"
             placeholder="San Francisco, CA"
-            onChange={(e) => setData((prev) => ({ ...prev, location: e.target.value }))}
+            value={data.location}
+            onChange={(e) =>
+              setData((prev) => ({ ...prev, location: e.target.value }))
+            }
           ></Input>
         )}
         {error && <p className={classes.error}>{error}</p>}
