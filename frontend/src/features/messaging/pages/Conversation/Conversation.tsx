@@ -38,7 +38,6 @@ export function Conversation() {
       `/topic/users/${user?.id}/conversations`,
       (message) => {
         const conversation = JSON.parse(message.body);
-        console.log(conversation);
         setConversations((prevConversations) => {
           const index = prevConversations.findIndex(
             (c) => c.id === conversation.id

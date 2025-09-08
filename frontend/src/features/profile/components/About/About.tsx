@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../../../../components/Input/Input";
 import { request } from "../../../../utils/api";
 import { IUser } from "../../../authentication/contexts/AuthenticationContextProvider";
@@ -13,6 +13,11 @@ interface AboutProps {
 export function About({ user, authUser, onUpdate }: AboutProps) {
   const [editingAbout, setEditingAbout] = useState(false);
   const [aboutInput, setAboutInput] = useState(user?.about || "");
+
+  useEffect(() => {
+    setAboutInput(user?.about || "");
+    //User dependency variable should be there
+  }, [user]);
 
   async function updateAbout() {
     if (!user?.id) return;

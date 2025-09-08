@@ -9,7 +9,7 @@ import {
 import { Title } from "../../components/Title/Title";
 import classes from "./Connections.module.scss";
 export function Connections() {
-  const [connexions, setConnections] = useState<IConnection[]>([]);
+  const [connections, setConnections] = useState<IConnection[]>([]);
   const { user } = useAuthentication();
   const ws = useWebSocket();
 
@@ -51,10 +51,10 @@ export function Connections() {
 
   return (
     <div className={classes.connections}>
-      <Title>Connections ({connexions.length})</Title>
+      <Title>Connections ({connections.length})</Title>
 
       <>
-        {connexions.map((connection) => (
+        {connections.map((connection) => (
           <Connection
             key={connection.id}
             connection={connection}
@@ -62,7 +62,7 @@ export function Connections() {
             setConnections={setConnections}
           />
         ))}
-        {connexions.length === 0 && (
+        {connections.length === 0 && (
           <div className={classes.empty}>No connections yet.</div>
         )}
       </>

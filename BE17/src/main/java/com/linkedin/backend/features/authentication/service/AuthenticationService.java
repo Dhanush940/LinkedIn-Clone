@@ -111,6 +111,8 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponseBody googleLoginOrSignup(String code, String page) {
+        System.out.println("Code:"+code);
+        System.out.println("page:"+page);
         String tokenEndpoint = "https://oauth2.googleapis.com/token";
         String redirectUri = "http://localhost:5173/authentication/" + page;
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();

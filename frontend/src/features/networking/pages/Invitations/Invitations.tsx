@@ -9,12 +9,12 @@ import {
 import { Title } from "../../components/Title/Title";
 import classes from "./Invitations.module.scss";
 export function Invitations() {
-  const [connexions, setConnections] = useState<IConnection[]>([]);
+  const [connections, setConnections] = useState<IConnection[]>([]);
   const [sent, setSent] = useState(false);
   const { user } = useAuthentication();
   const filtredConnections = sent
-    ? connexions.filter((c) => c.author.id === user?.id)
-    : connexions.filter((c) => c.recipient.id === user?.id);
+    ? connections.filter((c) => c.author.id === user?.id)
+    : connections.filter((c) => c.recipient.id === user?.id);
   const ws = useWebSocket();
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export function Invitations() {
 
   return (
     <div className={classes.connections}>
-      <Title>Invitations ({connexions.length})</Title>
+      <Title>Invitations ({connections.length})</Title>
       <div className={classes.header}>
         <button
           className={!sent ? classes.active : ""}

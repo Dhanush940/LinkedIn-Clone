@@ -8,6 +8,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,6 +18,9 @@ import java.util.List;
 
 @Component
 public class AuthenticationFilter extends HttpFilter {
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
     private final List<String> unsecuredEndpoints = Arrays.asList(
             "/api/v1/authentication/login",
             "/api/v1/authentication/register",
@@ -33,7 +38,7 @@ public class AuthenticationFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Origin", frontendUrl);
         response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         response.addHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 

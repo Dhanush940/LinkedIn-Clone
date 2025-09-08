@@ -70,7 +70,7 @@ export function LeftSidebar({ user }: ILeftSidebarProps) {
           <div className={classes.value}>0</div>
         </div> */}
         <div className={classes.item}>
-          <div className={classes.label}>Connexions</div>
+          <div className={classes.label}>Connections</div>
           <div className={classes.value}>
             {
               connections.filter(

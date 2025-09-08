@@ -19,15 +19,26 @@ export function Header({ user, authUser, onUpdate }: ITopProps) {
     company: user?.company,
     location: user?.location,
   });
-  const [connexions, setConnections] = useState<IConnection[]>([]);
+  const [connections, setConnections] = useState<IConnection[]>([]);
   const [invitations, setInvitations] = useState<IConnection[]>([]);
   const connection =
-    connexions.find(
+    connections.find(
       (c) => c.recipient.id === user?.id || c.author.id === user?.id
     ) ||
     invitations.find(
       (c) => c.recipient.id === user?.id || c.author.id === user?.id
     );
+
+  useEffect(() => {
+    setInfo({
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      position: user?.position,
+      company: user?.company,
+      location: user?.location,
+    });
+    //User dependency variable should be there
+  }, [user]);
 
   useEffect(() => {
     request<IConnection[]>({

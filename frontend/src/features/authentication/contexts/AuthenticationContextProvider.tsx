@@ -148,7 +148,6 @@ export function AuthenticationContextProvider() {
     user.emailVerified &&
     location.pathname == "/authentication/verify-email"
   ) {
-    console.log("here1");
     return <Navigate to="/" />;
   }
 
@@ -167,7 +166,6 @@ export function AuthenticationContextProvider() {
     user.profileComplete &&
     location.pathname.includes("/authentication/profile")
   ) {
-    console.log("here2");
     return <Navigate to="/" />;
   }
 
