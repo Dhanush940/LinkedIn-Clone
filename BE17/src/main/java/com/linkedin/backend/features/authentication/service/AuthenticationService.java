@@ -23,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -111,8 +110,6 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponseBody googleLoginOrSignup(String code, String page) {
-        System.out.println("Code:"+code);
-        System.out.println("page:"+page);
         String tokenEndpoint = "https://oauth2.googleapis.com/token";
         String redirectUri = "http://localhost:5173/authentication/" + page;
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -264,9 +261,6 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    public List<User> getUsersWithoutAuthenticated(User user) {
-        return userRepository.findAllByIdNot(user.getId());
-    }
 
     public User getUserById(Long receiverId) {
         return userRepository.findById(receiverId)

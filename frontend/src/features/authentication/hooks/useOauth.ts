@@ -43,10 +43,8 @@ export function useOauth(page: "login" | "signup") {
       }
 
       try {
-        await ouathLogin(code, page);
-
-        // setTimeout to see the loading spinner
-        setTimeout(() => {
+        setTimeout(async () => {
+          await ouathLogin(code, page);
           setIsOauthInProgress(false);
           setSearchParams({});
           navigate(destination || "/");
@@ -69,7 +67,6 @@ export function useOauth(page: "login" | "signup") {
     oauthError,
     startOauth: () => {
       const redirectUri = `${window.location.origin}/authentication/${page}`;
-
       window.location.href = `${VITE_GOOGLE_OAUTH_URL}?client_id=${GOOGLE_OAUTH2_CLIENT_ID}&redirect_uri=${redirectUri}&scope=openid+email+profile&response_type=code&state=${JSON.stringify(
         {
           antiForgeryToken: "n6kibcv2ov",

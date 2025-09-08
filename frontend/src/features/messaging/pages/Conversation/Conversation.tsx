@@ -38,6 +38,7 @@ export function Conversation() {
       `/topic/users/${user?.id}/conversations`,
       (message) => {
         const conversation = JSON.parse(message.body);
+        console.log(conversation);
         setConversations((prevConversations) => {
           const index = prevConversations.findIndex(
             (c) => c.id === conversation.id
@@ -271,11 +272,12 @@ export function Conversation() {
                         </div>
                       </button>
                     ))}
+                  {suggestingUsers.length === 0 && (
+                    <div style={{ padding: "1rem" }}>
+                      You need to have connections to start a conversation.
+                    </div>
+                  )}
                 </div>
-              )}
-
-              {suggestingUsers.length === 0 && (
-                <div>You need to have connections to start a conversation.</div>
               )}
             </form>
           )}
