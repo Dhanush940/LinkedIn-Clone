@@ -15,7 +15,7 @@ import classes from "./Profile.module.scss";
 export function Profile() {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
-  const { user: authUser } = useAuthentication();
+  const { user: authUser, setUser: setAuthUser } = useAuthentication();
   const [user, setUser] = useState<IUser | null>(null);
 
   usePageTitle(user?.firstName + " " + user?.lastName);
@@ -47,12 +47,12 @@ export function Profile() {
         <Header
           user={user}
           authUser={authUser}
-          onUpdate={(user) => setUser(user)}
+          onUpdate={(user) => setAuthUser(user)}
         />
         <About
           user={user}
           authUser={authUser}
-          onUpdate={(user) => setUser(user)}
+          onUpdate={(user) => setAuthUser(user)}
         />
         <Activity authUser={authUser} user={user} id={id} />
 

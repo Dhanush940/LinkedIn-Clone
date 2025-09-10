@@ -47,11 +47,12 @@ export function Feed() {
     return () => subscription?.unsubscribe();
   }, [user?.id, ws]);
 
-  const handlePost = async (content: string, picture: string) => {
+  const handlePost = async (data: FormData) => {
     await request<IPost>({
       endpoint: "/api/v1/feed/posts",
       method: "POST",
-      body: JSON.stringify({ content, picture }),
+      contentType: "multipart/form-data",
+      body: data,
       onSuccess: (data) => setPosts([data, ...posts]),
       onFailure: (error) => setError(error),
     });
@@ -71,7 +72,13 @@ export function Feed() {
           >
             <img
               className={`${classes.top} ${classes.avatar}`}
-              src={user?.profilePicture || "/avatar.svg"}
+              src={
+                user?.profilePicture
+                  ? `${import.meta.env.VITE_API_URL}/api/v1/storage/${
+                      user?.profilePicture
+                    }`
+                  : "/avatar.svg"
+              }
               alt=""
             />
           </button>
