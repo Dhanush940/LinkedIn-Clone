@@ -102,3 +102,21 @@ npm run dev
 You can access the backend at `http://localhost:8080`, the frontend at `http://localhost:5173`, and the Mailhog SMTP server UI at `http://localhost:8025`.
 
 The database hostname is `127.0.0.1`, the port is `3306`, and the root password is `root`.
+
+## Using Gmail for SMTP (production)
+
+1. Enable 2-Step Verification for your Google account.
+2. Create an App Password for "Mail" and copy the generated 16-character password.
+3. Set the following environment variables (locally in `BE17/.env`, or in your cloud provider's secret store):
+
+```bash
+SPRING_MAIL_HOST=smtp.gmail.com
+SPRING_MAIL_PORT=587
+SPRING_MAIL_USERNAME=your_email@gmail.com
+SPRING_MAIL_PASSWORD=your_app_password
+SPRING_MAIL_AUTH=true
+SPRING_MAIL_STARTTLS=true
+SPRING_MAIL_STARTTLS_REQUIRED=true
+```
+
+4. Restart the backend so Spring picks up the new env vars.
