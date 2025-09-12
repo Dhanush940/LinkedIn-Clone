@@ -1,0 +1,62 @@
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:9.1.0
+    container_name: linkedin-mysql
+    environment:
+      MYSQL_DATABASE: linkedin
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    networks:
+      - linkedin-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Mailhog for email testing
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: linkedin-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025" # Web UI for viewing emails
+    networks:
+      - linkedin-network
+
+  # Spring Boot Backend (Gradle)
+  backend:
+    build:
+      context: ./BE17
+      dockerfile: Dockerfile
+    container_name: linkedin-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+    env_file:
+      - ./BE17/.env # backend environment variables
+    networks:
+      - linkedin-network
+
+  # React Frontend (Vite + Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: linkedin-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - linkedin-network
+
+# Shared network for all services
+networks:
+  linkedin-network:
+    driver: bridge
